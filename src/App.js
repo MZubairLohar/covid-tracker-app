@@ -1,8 +1,10 @@
 import React,{ useState, useEffect } from 'react';
 import './App.css';
-import { FormControl, Select,MenuItem, Card, CardContent } from '@material-ui/core'
+import { FormControl, Select,MenuItem, Card, CardContent} 
+from '@material-ui/core';
 import InfoBox from './InfoBox';
 import Map from './Map';
+import Table from './Table'
 
 
 
@@ -10,6 +12,7 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [country ,setCountry] = useState('WorldWide');
   const [countryInfo , setCountryInfo] = useState({});
+  const [tableData, setTableData] = useState([]);
 
 
 useEffect(() => {
@@ -30,6 +33,7 @@ useEffect(() => {
         name: country.country,           // united kingdom , pakistan, iran
         value: country.countryInfo.iso2 //uk , pk , ir
       }));
+      setTableData(data);
       setCountries(countries);
     });
   };
@@ -101,6 +105,7 @@ const onCountryChange = async (e) => {
                   {/* graph */}
                 <CardContent>
                   <h3>Live Cases</h3>
+                  <Table countries={tableData} />
                   <h3>World wide new Cases</h3>
                 </CardContent>
       </Card>
