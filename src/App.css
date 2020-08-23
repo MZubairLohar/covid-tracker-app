@@ -36,3 +36,8 @@ body{
 .app-left{
   flex:0.9;
 }
+
+.bottom{
+  color: white;
+  text-align: center;
+}
