@@ -1,13 +1,18 @@
 import React,{ useState, useEffect } from 'react';
 import './App.css';
-import { FormControl, Select,MenuItem, Card, CardContent} 
+import { FormControl, 
+  Select,
+  MenuItem, 
+  Card, 
+  CardContent} 
 from '@material-ui/core';
 import InfoBox from './InfoBox';
 import Map from './Map';
 import Table from './Table';
-import { sortData } from './Util';
+import { sortData, prettyPrintStat  } from './Util';
 import LineGraph from './LineGraph';
 import "leaflet/dist/leaflet.css";
+import numeral from 'numeral';
 
 
 function App() {
@@ -25,8 +30,8 @@ useEffect(() => {
   .then(response => response.json())
   .then(data => {
     setCountryInfo(data);
-  })
-}, [])
+  });
+}, []);
  
 useEffect(() => {
   
@@ -55,10 +60,10 @@ const onCountryChange = async (e) => {
 
   const url = countryCode === 'WorldWide' ?
    "https://disease.sh/v3/covid-19/all" : 
-  `https://disease.sh/v3/covid-19/countries/${countryCode}`
+  `https://disease.sh/v3/covid-19/countries/${countryCode}`;
   
   await fetch(url)
-  .then(response => response.json())
+  .then((response) => response.json())
   .then(data => {
     setCountry(countryCode);
     setCountryInfo(data); 
@@ -70,7 +75,7 @@ const onCountryChange = async (e) => {
  console.log('country info ', countryInfo);
   return (
     <div className="app">
-      <div className='app-left'>
+      <div className='app__left'>
         
 
       <div className='app__header'>
@@ -91,16 +96,24 @@ const onCountryChange = async (e) => {
             </FormControl>
        </Card>
         </div>
-        
-        {/* header */}
-
-        {/* input + dropout field */}
         <div className="app_status">
-                <InfoBox title="Corona Virus Cases" cases={countryInfo.todayCases} total={countryInfo.cases}/>
+                <InfoBox 
+                onclick = {(e) => setCasesType("cases")}
+                title="Corona Virus Cases" 
+                cases={prettyPrintStat(countryInfo.todayCases)} 
+                total={numeral(countryInfo.cases).format("0,0a")}/>
                 
-                <InfoBox title="Recoverd" cases={countryInfo.todayRecovered} total={countryInfo.recovered}/>
+                <InfoBox
+                onclick = {(e) => setCasesType("Recovery")}
+                title="Recoverd" 
+                cases={prettyPrintStat(countryInfo.todayRecovered)} 
+                total={numeral(countryInfo.recoverd).format("0,0a")}/>
 
-                <InfoBox title="Deaths" cases={countryInfo.todayDeaths} total={countryInfo.deaths}/>
+                <InfoBox
+                onclick = {(e) => setCasesType("Deaths")}
+                title="Deaths" 
+                cases={prettyPrintStat(countryInfo.todayCases)} 
+                total={numeral(countryInfo.deaths).format("0,0a")}/>
         </div>
       
          <Map 
@@ -116,8 +129,9 @@ const onCountryChange = async (e) => {
                   <h3>Live Cases</h3>
                   <Table countries={tableData} />
                   <h3>World wide new Cases</h3>
-                </CardContent>
+                
                 <LineGraph casesType={casesType}/>
+                </CardContent>
       </Card>
     </div>
   );
